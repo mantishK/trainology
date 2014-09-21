@@ -31,7 +31,7 @@ func route() {
 	//route
 	for _, versionName := range version {
 		//user
-		myRouter.Get(versionName, "/station", stationController.GetNearestStation)
+		myRouter.Get(versionName, "/neareststation", stationController.GetNearestStation)
 		// myRouter.Post(versionName, "/user", userController.SaveUser, authenticateFilter)
 		// myRouter.Head(versionName, "/username", userController.UserNameExists, authenticateFilter)
 		// myRouter.Put(versionName, "/user", userController.UpdateUser, authenticateFilter, authorizeFilter)

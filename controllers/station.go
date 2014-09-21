@@ -3,6 +3,7 @@ package controllers
 import (
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/mantishK/trainology/core/apperror"
 	"github.com/mantishK/trainology/core/validate"
@@ -33,7 +34,6 @@ func (c *Station) GetNearestStation(w http.ResponseWriter, r *http.Request, filt
 	}
 
 	result := make(map[string]interface{})
-
-	result["name"] = station.StationName
+	result["name"] = strings.Split(station.StationName, "(")[0]
 	view.RenderJson(result)
 }
