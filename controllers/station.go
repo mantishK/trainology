@@ -23,6 +23,14 @@ type PathReturnFormat struct {
 	Order int
 }
 
+type PathRealReturnFormat struct {
+	lat   float64
+	long  float64
+	name  string
+	train string
+	order int
+}
+
 type Station struct {
 }
 
@@ -86,10 +94,14 @@ func (c *Station) GetShortestPath(w http.ResponseWriter, r *http.Request, filter
 	resp, err := http.Post(baseUrl, "application/json", body)
 	if err != nil {
 		fmt.Println(err)
+		view.RenderHttpError("No Trains !!", 404)
+		return
 	}
 	if resp.Status != "200 OK" && resp.Status != "201" {
 		fmt.Println(resp.Status)
 		fmt.Println("in error")
+		view.RenderHttpError("No Trains !!", 404)
+		return
 	}
 	var result interface{}
 	bodyBuffer := new(bytes.Buffer)
@@ -99,7 +111,7 @@ func (c *Station) GetShortestPath(w http.ResponseWriter, r *http.Request, filter
 	resultMap := result.(map[string]interface{})
 	// fmt.Println(resultMap)
 	if resultMap["nodes"] == nil {
-		view.RenderJson(nil)
+		view.RenderHttpError("No Trains !!", 404)
 		return
 	}
 	nodesArray := resultMap["nodes"].([]interface{})
@@ -114,9 +126,21 @@ func (c *Station) GetShortestPath(w http.ResponseWriter, r *http.Request, filter
 		fmt.Println(code)
 		fmt.Println(key)
 		returnArray[key] = getStationDetails(dbMap, code)
-		returnArray[key].Order = key
+		returnArray[key].Order = key + 1
 	}
-	view.RenderJson(returnArray)
+	returnResult := make([]map[string]interface{}, len(returnArray), len(returnArray))
+	for key, item := range returnArray {
+		returnResult[key] = make(map[string]interface{})
+		// returnResult[key].(map[string]interface{})
+		returnResult[key]["lat"] = item.Lat
+		returnResult[key]["long"] = item.Long
+		if item.Train != "" {
+			returnResult[key]["train"] = item.Train
+		}
+		returnResult[key]["name"] = strings.Split(item.Name, "(")[0]
+		returnResult[key]["order"] = item.Order
+	}
+	view.RenderJson(returnResult)
 }
 
 func getCode(node string, dbMap *gorp.DbMap) (string, error) {
