@@ -114,18 +114,24 @@ func (c *Station) GetShortestPath(w http.ResponseWriter, r *http.Request, filter
 		view.RenderHttpError("No Trains !!", 404)
 		return
 	}
+	relationshipArray := make([]interface{}, 0, 0)
+	if resultMap["relationships"] != nil {
+		relationshipArray = resultMap["relationships"].([]interface{})
+	}
 	nodesArray := resultMap["nodes"].([]interface{})
-	fmt.Println("1")
-	fmt.Println(nodesArray)
 	length := len(nodesArray)
 	// var returnArray []PathReturnFormat
 	returnArray := make([]PathReturnFormat, length, length)
 	for key, nodeInterface := range nodesArray {
+		fmt.Println("nodeArray")
+		fmt.Println(nodeInterface)
 		node := nodeInterface.(string)
 		code, _ := getCode(node, dbMap)
-		fmt.Println(code)
-		fmt.Println(key)
 		returnArray[key] = getStationDetails(dbMap, code)
+		fmt.Println(relationshipArray)
+		if (len(relationshipArray) - 1) >= key {
+			returnArray[key].Train = getTrainDetails(relationshipArray[key].(string))
+		}
 		returnArray[key].Order = key + 1
 	}
 	returnResult := make([]map[string]interface{}, len(returnArray), len(returnArray))
@@ -134,6 +140,7 @@ func (c *Station) GetShortestPath(w http.ResponseWriter, r *http.Request, filter
 		// returnResult[key].(map[string]interface{})
 		returnResult[key]["lat"] = item.Lat
 		returnResult[key]["lng"] = item.Long
+		fmt.Println(item.Train)
 		if item.Train != "" {
 			returnResult[key]["train"] = item.Train
 		}
