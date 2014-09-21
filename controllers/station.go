@@ -133,7 +133,7 @@ func (c *Station) GetShortestPath(w http.ResponseWriter, r *http.Request, filter
 		returnResult[key] = make(map[string]interface{})
 		// returnResult[key].(map[string]interface{})
 		returnResult[key]["lat"] = item.Lat
-		returnResult[key]["long"] = item.Long
+		returnResult[key]["lng"] = item.Long
 		if item.Train != "" {
 			returnResult[key]["train"] = item.Train
 		}
