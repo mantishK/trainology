@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/filmtwine/backend/filters"
-	"github.com/filmtwine/backend/views"
+	"github.com/mantishK/trainology/filters"
+	"github.com/mantishK/trainology/views"
 )
 
 type router struct {
