@@ -22,7 +22,12 @@ func (v *view) SetHeader(key, value string) {
 }
 
 func (v *view) RenderJson(data interface{}) error {
+	fmt.Println(data)
 	jsonData, err := json.Marshal(data)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(data)
 	if err != nil {
 		return err
 	}
@@ -30,7 +35,7 @@ func (v *view) RenderJson(data interface{}) error {
 
 	//remove in production
 	v.writer.Header().Set("Access-Control-Allow-Origin", "*")
-
+	fmt.Println(string(jsonData))
 	fmt.Fprint(v.writer, string(jsonData))
 	return nil
 }
