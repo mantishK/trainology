@@ -1,1 +1,1 @@
-A simple CRUD API for note using vanilla Go language
+Railway APIs for Sekuoia Hack
